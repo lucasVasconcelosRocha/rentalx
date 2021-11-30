@@ -1,31 +1,52 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
+import { Category } from "./Category";
+
+@Entity("cars")
 class Car {
+  @PrimaryColumn()
   id: string;
 
+  @Column()
   name: string;
 
+  @Column()
   description: string;
 
+  @Column()
   daily_rate: number;
 
+  @Column({ name: "isAvailable" })
   available: boolean;
 
-  license_place: string;
+  @Column()
+  license_plate: string;
 
+  @Column()
   fine_amount: number;
 
+  @Column()
   brand: string;
 
-  category_id: string;
+  @ManyToOne(() => Category)
+  @JoinColumn({ name: "category_id" })
+  category_id: Category;
 
-  create_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
   constructor() {
-    if (this.id) {
+    if (!this.id) {
       this.id = uuidv4();
       this.available = true;
-      this.create_at = new Date();
     }
   }
 }

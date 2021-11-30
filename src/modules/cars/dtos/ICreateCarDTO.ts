@@ -1,3 +1,5 @@
+import { Category } from "../infra/typeorm/entities/Category";
+
 interface ICreateCarDTO {
   name: string;
   description: string;
@@ -5,7 +7,7 @@ interface ICreateCarDTO {
   license_plate: string;
   fine_amount: number;
   brand: string;
-  category_id: string;
+  category_id: Category;
 }
 
 export { ICreateCarDTO };
