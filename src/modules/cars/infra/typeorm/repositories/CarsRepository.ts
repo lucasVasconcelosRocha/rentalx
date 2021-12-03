@@ -12,6 +12,10 @@ class CarsRepository implements ICarsRepository {
     this.repository = getRepository(Car);
   }
 
+  listAllCars(): Promise<Car[]> {
+    throw new Error("Method not implemented.");
+  }
+
   async create({
     name,
     description,
@@ -40,6 +44,32 @@ class CarsRepository implements ICarsRepository {
     const carAlreadyExists = this.repository.findOne({ license_plate });
 
     return carAlreadyExists;
+  }
+
+  async listAvailableCars(
+    brand?: string,
+    category_id?: string,
+    name?: string
+  ): Promise<Car[]> {
+    const carsQuery = this.repository
+      .createQueryBuilder("c")
+      .where("c.isAvailable = :available", { available: true });
+
+    if (brand) {
+      carsQuery.andWhere("c.brand = :brand", { brand });
+    }
+
+    if (name) {
+      carsQuery.andWhere("c.name = :name", { name });
+    }
+
+    if (category_id) {
+      carsQuery.andWhere("c.category_id = :category_id", { category_id });
+    }
+
+    const cars = await carsQuery.getMany();
+
+    return cars;
   }
 }
 
