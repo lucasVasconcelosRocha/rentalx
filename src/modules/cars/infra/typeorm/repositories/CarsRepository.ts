@@ -12,10 +12,6 @@ class CarsRepository implements ICarsRepository {
     this.repository = getRepository(Car);
   }
 
-  listAllCars(): Promise<Car[]> {
-    throw new Error("Method not implemented.");
-  }
-
   async create({
     name,
     description,
@@ -24,6 +20,8 @@ class CarsRepository implements ICarsRepository {
     fine_amount,
     brand,
     category_id,
+    specifications,
+    id,
   }: ICreateCarDTO): Promise<Car> {
     const car = this.repository.create({
       name,
@@ -33,6 +31,8 @@ class CarsRepository implements ICarsRepository {
       fine_amount,
       brand,
       category_id,
+      specifications,
+      id,
     });
 
     await this.repository.save(car);
@@ -40,7 +40,7 @@ class CarsRepository implements ICarsRepository {
     return car;
   }
 
-  findCarByLicensePlate(license_plate: string): Promise<Car> {
+  async findCarByLicensePlate(license_plate: string): Promise<Car> {
     const carAlreadyExists = this.repository.findOne({ license_plate });
 
     return carAlreadyExists;
@@ -70,6 +70,11 @@ class CarsRepository implements ICarsRepository {
     const cars = await carsQuery.getMany();
 
     return cars;
+  }
+
+  async findById(car_id: string): Promise<Car> {
+    const car = this.repository.findOne(car_id);
+    return car;
   }
 }
 
