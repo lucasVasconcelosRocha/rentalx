@@ -6,7 +6,7 @@ import { ImportCategoryController } from "@modules/cars/useCases/importCategory/
 import { ListCategoriesController } from "@modules/cars/useCases/listCategories/ListCategoriesController";
 
 import { ensureAdmin } from "../middlewares/ensureAdmin";
-import { ensureAthenticated } from "../middlewares/ensureAuthenticated";
+import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 
 const categoriesRoutes = Router();
 
@@ -18,7 +18,7 @@ const importCategoryController = new ImportCategoryController();
 
 categoriesRoutes.post(
   "/",
-  ensureAthenticated,
+  ensureAuthenticated,
   ensureAdmin,
   createCategoryController.handle
 );

@@ -1,22 +1,31 @@
+import dayjs from "dayjs";
+
 import { RentalsRepositoryInMemory } from "@modules/rentals/repositories/in-memory/RentalsRepositoryInMemory";
+import { DayjsDateProvider } from "@shared/container/providers/DateProvider/Implementations/DayjsDateProvider";
 import { AppError } from "@shared/errors/AppError";
 
 import { CreateRentalUseCase } from "./CreateRentalUseCase";
 
 let createRentalUseCase: CreateRentalUseCase;
 let rentalsRepositoryInMemory: RentalsRepositoryInMemory;
+let dayJsProvider: DayjsDateProvider;
 
 describe("Create Rental", () => {
+  const dayAdd24Hours = dayjs().add(1, "day").toDate();
   beforeEach(() => {
     rentalsRepositoryInMemory = new RentalsRepositoryInMemory();
-    createRentalUseCase = new CreateRentalUseCase(rentalsRepositoryInMemory);
+    dayJsProvider = new DayjsDateProvider();
+    createRentalUseCase = new CreateRentalUseCase(
+      rentalsRepositoryInMemory,
+      dayJsProvider
+    );
   });
 
   it("should be able to create new rental", async () => {
     const rental = await createRentalUseCase.execute({
       car_id: "1234552523",
       user_id: "23p42jkj",
-      expected_return_date: new Date(),
+      expected_return_date: dayAdd24Hours,
     });
 
     expect(rental).toHaveProperty("id");
@@ -28,13 +37,13 @@ describe("Create Rental", () => {
       await createRentalUseCase.execute({
         car_id: "123456",
         user_id: "23p42jkj",
-        expected_return_date: new Date(),
+        expected_return_date: dayAdd24Hours,
       });
 
-      const rental = await createRentalUseCase.execute({
+      await createRentalUseCase.execute({
         car_id: "12345",
         user_id: "23p42jkj",
-        expected_return_date: new Date(),
+        expected_return_date: dayAdd24Hours,
       });
     }).rejects.toBeInstanceOf(AppError);
   });
@@ -44,13 +53,23 @@ describe("Create Rental", () => {
       await createRentalUseCase.execute({
         car_id: "123456",
         user_id: "23p42jkj",
-        expected_return_date: new Date(),
+        expected_return_date: dayAdd24Hours,
       });
 
-      const rental = await createRentalUseCase.execute({
+      await createRentalUseCase.execute({
         car_id: "123456",
         user_id: "oasidf",
-        expected_return_date: new Date(),
+        expected_return_date: dayAdd24Hours,
+      });
+    }).rejects.toBeInstanceOf(AppError);
+  });
+
+  it("should be able to create new rental with invalid return time.", async () => {
+    expect(async () => {
+      await createRentalUseCase.execute({
+        car_id: "123456",
+        user_id: "23p42jkj",
+        expected_return_date: dayjs().toDate(),
       });
     }).rejects.toBeInstanceOf(AppError);
   });

@@ -3,7 +3,7 @@ import { Router } from "express";
 import { CreateSpecificationController } from "../../../../modules/cars/useCases/createSpecification/CreateSpecificationController";
 import { ListSpecificationsController } from "../../../../modules/cars/useCases/listSpecifications/ListSpecificationsController";
 import { ensureAdmin } from "../middlewares/ensureAdmin";
-import { ensureAthenticated } from "../middlewares/ensureAuthenticated";
+import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 
 const specificationsRoutes = Router();
 
@@ -12,7 +12,7 @@ const listSpecificationsController = new ListSpecificationsController();
 
 specificationsRoutes.post(
   "/",
-  ensureAthenticated,
+  ensureAuthenticated,
   ensureAdmin,
   createSpecificationController.handle
 );
