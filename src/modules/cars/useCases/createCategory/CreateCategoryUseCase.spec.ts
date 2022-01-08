@@ -3,24 +3,24 @@ import { AppError } from "@shared/errors/AppError";
 
 import { CreateCategoryUseCase } from "./CreateCategoryUseCase";
 
-let createCategoryUsecase: CreateCategoryUseCase;
+let createCategoryUseCase: CreateCategoryUseCase;
 let categoriesRepositoryInMemory: CategoriesRepositoryInMemory;
 
 describe("Create category", () => {
   beforeEach(() => {
     categoriesRepositoryInMemory = new CategoriesRepositoryInMemory();
-    createCategoryUsecase = new CreateCategoryUseCase(
+    createCategoryUseCase = new CreateCategoryUseCase(
       categoriesRepositoryInMemory
     );
   });
 
   it("should be able to create a new category", async () => {
     const category = {
-      name: "Category teest",
+      name: "Category test",
       description: "Category description test",
     };
 
-    await createCategoryUsecase.execute({
+    await createCategoryUseCase.execute({
       name: category.name,
       description: category.description,
     });
@@ -35,16 +35,16 @@ describe("Create category", () => {
   it("should not be able to create a new category with same name", async () => {
     expect(async () => {
       const category = {
-        name: "Category teest",
+        name: "Category test",
         description: "Category description test",
       };
 
-      await createCategoryUsecase.execute({
+      await createCategoryUseCase.execute({
         name: category.name,
         description: category.description,
       });
 
-      await createCategoryUsecase.execute({
+      await createCategoryUseCase.execute({
         name: category.name,
         description: category.description,
       });

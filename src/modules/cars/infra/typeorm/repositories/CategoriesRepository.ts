@@ -34,9 +34,6 @@ class CategoriesRepository implements ICategoriesRepository {
       .createQueryBuilder("cat")
       .where("cat.name like :name", { name: `%${name}%` })
       .getOne();
-
-    console.log(category);
-
     return category;
   }
 }

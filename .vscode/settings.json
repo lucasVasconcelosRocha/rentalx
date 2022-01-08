@@ -8,6 +8,9 @@
         "duração",
         "exista",
         "mínima",
-        "possível"
+        "possível",
+        "rentalx",
+        "typeorm",
+        "uuidv"
     ]
 }
