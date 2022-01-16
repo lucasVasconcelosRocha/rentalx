@@ -59,18 +59,18 @@ describe("Create car", () => {
   });
 
   it("should not be able to create a new car with the same license plate.", async () => {
-    expect(async () => {
-      await createCarUseCase.execute({
-        name: "carSamePlate",
-        description: "nicecar",
-        daily_rate: 140.0,
-        license_plate: "abc123",
-        fine_amount: 40.0,
-        brand: "audi",
-        category_id: "1298398sdahfe980",
-      });
+    await createCarUseCase.execute({
+      name: "carSamePlate",
+      description: "nicecar",
+      daily_rate: 140.0,
+      license_plate: "abc123",
+      fine_amount: 40.0,
+      brand: "audi",
+      category_id: "1298398sdahfe980",
+    });
 
-      await createCarUseCase.execute({
+    await expect(
+      createCarUseCase.execute({
         name: "carSamePlate",
         description: "nicecar",
         daily_rate: 140.0,
@@ -78,7 +78,7 @@ describe("Create car", () => {
         fine_amount: 40.0,
         brand: "audi",
         category_id: "1298398sdahfe980",
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      })
+    ).rejects.toEqual(new AppError("Car already exists!"));
   });
 });
