@@ -1,4 +1,4 @@
-import { inject } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 
 import { ICarsRepository } from "@modules/cars/repositories/ICarsRepository";
 import { Rental } from "@modules/rentals/infra/typeorm/entities/Rental";
@@ -7,10 +7,11 @@ import { IDateProvider } from "@shared/container/providers/DateProvider/IDatePro
 import { AppError } from "@shared/errors/AppError";
 
 interface IRequest {
-  rental_id: string;
-  car_id: string;
+  id: string;
+  user_id: string;
 }
 
+@injectable()
 class DevolutionRentalUseCase {
   constructor(
     @inject("RentalsRepository")
@@ -21,9 +22,9 @@ class DevolutionRentalUseCase {
     private dateProvider: IDateProvider
   ) {}
 
-  async execute({ rental_id, car_id }: IRequest): Promise<Rental> {
-    const rental = await this.rentalsRepository.findById(rental_id);
-    const car = await this.carsRepository.findById(car_id);
+  async execute({ id, user_id }: IRequest): Promise<Rental> {
+    const rental = await this.rentalsRepository.findById(id);
+    const car = await this.carsRepository.findById(rental.car_id);
     const minimum_daily = 1;
 
     if (!rental) {
@@ -41,10 +42,7 @@ class DevolutionRentalUseCase {
       daily = minimum_daily;
     }
 
-    const delay = this.dateProvider.compareInDays(
-      dateNow,
-      rental.expected_return_date
-    );
+    const delay = this.dateProvider.compareInDays(dateNow, rental.start_date);
 
     let total = 0;
 
