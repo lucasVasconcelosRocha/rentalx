@@ -1,8 +1,11 @@
 import "reflect-metadata";
 import "dotenv/config";
 import express, { NextFunction, Response, Request } from "express";
-import "express-async-errors";
 import swaggerUi from "swagger-ui-express";
+
+import upload from "@config/upload";
+
+import "express-async-errors";
 
 import "@shared/container";
 
@@ -20,6 +23,9 @@ app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
+app.use("/avatar", express.static(`${upload.tmpFolder}/avatar`));
+app.use("/cars", express.static(`${upload.tmpFolder}/car`));
+
 app.use(router);
 
 app.use(
@@ -30,7 +36,7 @@ app.use(
 
     return response.status(500).json({
       status: "error",
-      messsage: `Internal server error - ${err.message}`,
+      message: `Internal server error - ${err.message}`,
     });
   }
 );
