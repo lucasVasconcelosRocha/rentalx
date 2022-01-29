@@ -21,7 +21,7 @@ class UpdateUserAvatarUseCase {
     const user = await this.usersRepository.findById(user_id);
 
     if (user.avatar) {
-      await this.localStorage.delete(avatar_file, "avatar");
+      await this.localStorage.delete(user.avatar, "avatar");
     }
 
     await this.localStorage.save(avatar_file, "avatar");
