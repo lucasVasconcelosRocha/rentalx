@@ -17,7 +17,7 @@ class SendForgotPasswordUseCase {
     private usersTokensRepository: IUsersTokensRepository,
     @inject("DayjsDateProvider")
     private dateProvider: IDateProvider,
-    @inject("EtherealMailProvider")
+    @inject("MailProvider")
     private mailProvider: IMailProvider
   ) {}
 
@@ -36,7 +36,6 @@ class SendForgotPasswordUseCase {
     if (!user) {
       throw new AppError("User does not exists!");
     }
-
     const token = uuidv4();
 
     const expires_date = this.dateProvider.addHours(3);

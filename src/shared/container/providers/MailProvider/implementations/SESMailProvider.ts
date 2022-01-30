@@ -1,3 +1,4 @@
+import { SES } from "aws-sdk";
 import fs from "fs";
 import handlebars from "handlebars";
 import nodemailer, { Transporter } from "nodemailer";
@@ -6,16 +7,15 @@ import { injectable } from "tsyringe";
 import { IMailProvider } from "../IMailProvider";
 
 @injectable()
-class EtherealMailProvider implements IMailProvider {
+class SESMailProvider implements IMailProvider {
   private client: Transporter;
 
   constructor() {
     this.client = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.APP_EMAIL,
-        pass: process.env.APP_EMAIL_PASS,
-      },
+      SES: new SES({
+        apiVersion: "2010-12-01",
+        region: process.env.AWS_REGION,
+      }),
     });
   }
 
@@ -31,17 +31,15 @@ class EtherealMailProvider implements IMailProvider {
 
     const templateHTML = templateParse(variables);
 
-    const message = await this.client
+    await this.client
       .sendMail({
         to,
-        from: "Rentx <noreplay@rentx.com.br>",
+        from: "Rentx <lvrtechnologi@gmail.com>",
         subject,
         html: templateHTML,
       })
       .catch((err) => console.error(err));
-
-    console.log("Message sent: %s", message.messageId);
   }
 }
 
-export { EtherealMailProvider };
+export { SESMailProvider };
