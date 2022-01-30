@@ -9,23 +9,33 @@ import { IMailProvider } from "../IMailProvider";
 class EtherealMailProvider implements IMailProvider {
   private client: Transporter;
 
-  constructor() {
-    nodemailer
-      .createTestAccount()
-      .then((account) => {
-        const transporter = nodemailer.createTransport({
-          host: account.smtp.host,
-          port: account.smtp.port,
-          secure: account.smtp.secure,
-          auth: {
-            user: account.user,
-            pass: account.pass,
-          },
-        });
+  // constructor() {
+  //  nodemailer
+  //    .createTestAccount()
+  //    .then((account) => {
+  //      const transporter = nodemailer.createTransport({
+  //        host: account.smtp.host,
+  //        port: account.smtp.port,
+  //        secure: account.smtp.secure,
+  //        auth: {
+  //          user: account.user,
+  //          pass: account.pass,
+  //        },
+  //      });
+  //
+  //      this.client = transporter;
+  //    })
+  //    .catch((err) => console.error(err));
+  // }
 
-        this.client = transporter;
-      })
-      .catch((err) => console.error(err));
+  constructor() {
+    this.client = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_EMAIL_PASS,
+      },
+    });
   }
 
   async sendMail(
@@ -40,12 +50,14 @@ class EtherealMailProvider implements IMailProvider {
 
     const templateHTML = templateParse(variables);
 
-    const message = await this.client.sendMail({
-      to,
-      from: "Rentx <noreplay@rentx.com.br",
-      subject,
-      html: templateHTML,
-    });
+    const message = await this.client
+      .sendMail({
+        to,
+        from: "Rentx <noreplay@rentx.com.br>",
+        subject,
+        html: templateHTML,
+      })
+      .catch((err) => console.error(err));
 
     console.log("Message sent: %s", message.messageId);
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(message));
