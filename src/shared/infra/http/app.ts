@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "dotenv/config";
+import cors from "cors";
 import express, { NextFunction, Response, Request } from "express";
 import swaggerUi from "swagger-ui-express";
 
@@ -25,6 +26,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use("/avatar", express.static(`${upload.tmpFolder}/avatar`));
 app.use("/cars", express.static(`${upload.tmpFolder}/car`));
+
+app.use(cors());
 
 app.use(router);
 
