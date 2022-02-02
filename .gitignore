@@ -121,3 +121,4 @@ dist
 tmp/*
 !tmp/.gitkeep
 ormconfig.json
+docker-compose.yml
